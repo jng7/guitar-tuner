@@ -67,6 +67,16 @@ function renderSignalBars(level) {
   });
 }
 
+function setTopStatus(pillText, message) {
+  if (livePill) {
+    livePill.textContent = pillText;
+  }
+
+  if (statusText) {
+    statusText.textContent = message;
+  }
+}
+
 function resetDisplayState() {
   tunerState.recentSamples = [];
   tunerState.lockedNoteKey = null;
@@ -314,8 +324,7 @@ function handleMissingPitch(label, percent) {
   tunerState.missingFrames += 1;
 
   if (tunerState.lockedNoteKey && tunerState.missingFrames <= HOLD_FRAMES_ON_DROP) {
-    livePill.textContent = "Holding Note";
-    statusText.textContent = `Holding the last stable note from ${label} while the signal settles.`;
+    setTopStatus("Holding Note", `Holding the last stable note from ${label} while the signal settles.`);
     signalCopy.textContent = `Listening on ${label}. Current input level is ${percent}% while waiting for a cleaner pitch.`;
     return;
   }
@@ -331,8 +340,7 @@ function updateTunerFromPitch(event) {
   renderSignalBars(level);
 
   if (!isRunning) {
-    livePill.textContent = "Mic Idle";
-    statusText.textContent = "Use the browser microphone API to start live tuning";
+    setTopStatus("Mic Idle", "Use the browser microphone API to start live tuning");
     signalCopy.textContent = "Mic level visualization will respond when live input starts.";
     if (historyList) {
       historyList.innerHTML = `
@@ -346,8 +354,7 @@ function updateTunerFromPitch(event) {
     return;
   }
 
-  livePill.textContent = hasPitch ? "Pitch Locked" : "Mic Live";
-  statusText.textContent = `Monitoring ${label} through the microphone input component.`;
+  setTopStatus(hasPitch ? "Pitch Locked" : "Mic Live", `Monitoring ${label} through the microphone input component.`);
 
   if (!hasPitch || !pitchHz) {
     handleMissingPitch(label, percent);
@@ -372,8 +379,7 @@ function updateTunerFromPitch(event) {
   const hasLockedPitch = updateLockedPitch(summary);
 
   if (!hasLockedPitch) {
-    livePill.textContent = "Stabilizing";
-    statusText.textContent = `Monitoring ${label} while the tuner confirms a stable note.`;
+    setTopStatus("Stabilizing", `Monitoring ${label} while the tuner confirms a stable note.`);
     signalCopy.textContent = `Listening on ${label}. Building note stability from recent pitch frames.`;
     resetTunerDisplay(true);
     return;
