@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guitar Tuner UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+
+    <main class="app">
+      <section class="topbar">
+        <div>
+          <p class="eyebrow">Studio Tuner</p>
+          <h1>Guitar Tuner</h1>
+        </div>
+
+        <button class="ghost-button" type="button">Settings</button>
+      </section>
+
+      <section class="hero-panel glass">
+        <div class="hero-copy">
+          <p class="section-label">Live Input</p>
+          <div class="status-row">
+            <span class="live-pill" id="livePill">Mic Idle</span>
+            <span class="muted-text" id="statusText">Use the browser microphone API to start live tuning</span>
+          </div>
+        </div>
+
+        <div class="tuner-display">
+          <div class="pitch-side pitch-flat">
+            <span class="pitch-symbol">b</span>
+            <span class="pitch-label">Flat</span>
+          </div>
+
+          <div class="note-core">
+            <span class="detected-frequency" id="frequencyValue">-- Hz</span>
+            <div class="note-stack">
+              <span class="note-name" id="noteName">--</span>
+              <span class="note-variant" id="noteVariant">-</span>
+            </div>
+            <span class="note-meta" id="noteMeta">Waiting for signal</span>
+          </div>
+
+          <div class="pitch-side pitch-sharp">
+            <span class="pitch-symbol">#</span>
+            <span class="pitch-label">Sharp</span>
+          </div>
+        </div>
+
+        <div class="meter-panel">
+          <div class="meter-scale" aria-hidden="true">
+            <span>-50</span>
+            <span>-25</span>
+            <span>0</span>
+            <span>+25</span>
+            <span>+50</span>
+          </div>
+
+          <div class="meter-track">
+            <div class="meter-zones">
+              <span class="zone left"></span>
+              <span class="zone center"></span>
+              <span class="zone right"></span>
+            </div>
+            <div class="meter-ticks">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="meter-needle" id="meterNeedle"></div>
+          </div>
+
+          <div class="meter-footer">
+            <span class="muted-text">Cents Off</span>
+            <strong id="centsValue">+04</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="control-grid">
+        <article class="glass control-card">
+          <div class="card-heading">
+            <p class="section-label">Mode</p>
+            <span class="muted-text">Practice layout</span>
+          </div>
+          <div class="segmented-control">
+            <button class="segment active" type="button">Auto</button>
+            <button class="segment" type="button">Manual</button>
+            <button class="segment" type="button">Chromatic</button>
+          </div>
+        </article>
+
+        <article class="glass control-card">
+          <div class="card-heading">
+            <p class="section-label">Reference</p>
+            <span class="muted-text">Concert pitch</span>
+          </div>
+          <div class="reference-box">
+            <strong id="referenceValue">A4 = 440 Hz</strong>
+            <input class="slider" id="referenceSlider" type="range" min="432" max="446" value="440">
+          </div>
+        </article>
+
+        <article class="glass control-card">
+          <div class="card-heading">
+            <p class="section-label">Preset</p>
+            <span class="muted-text">Alternate tunings</span>
+          </div>
+          <div class="preset-list">
+            <button class="preset active" type="button">Standard</button>
+            <button class="preset" type="button">Drop D</button>
+            <button class="preset" type="button">Open G</button>
+            <button class="preset" type="button">DADGAD</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="mic-component-section glass">
+        <div class="section-header">
+          <div>
+            <p class="section-label">Microphone</p>
+            <h2>Input Selector</h2>
+          </div>
+          <span class="muted-text">Uses the browser MediaDevices and Web Audio APIs</span>
+        </div>
+
+        <microphone-input-selector></microphone-input-selector>
+      </section>
+
+      <section class="strings-section glass">
+        <div class="section-header">
+          <div>
+            <p class="section-label">Strings</p>
+            <h2>Target Tuning</h2>
+          </div>
+          <span class="muted-text">Tap to highlight a string</span>
+        </div>
+
+        <div class="string-grid" id="stringGrid">
+          <button class="string-card" data-note="E2" type="button">
+            <span class="string-number">6</span>
+            <strong>E</strong>
+            <span>E2</span>
+          </button>
+          <button class="string-card" data-note="A2" type="button">
+            <span class="string-number">5</span>
+            <strong>A</strong>
+            <span>A2</span>
+          </button>
+          <button class="string-card active" data-note="D3" type="button">
+            <span class="string-number">4</span>
+            <strong>D</strong>
+            <span>D3</span>
+          </button>
+          <button class="string-card" data-note="G3" type="button">
+            <span class="string-number">3</span>
+            <strong>G</strong>
+            <span>G3</span>
+          </button>
+          <button class="string-card" data-note="B3" type="button">
+            <span class="string-number">2</span>
+            <strong>B</strong>
+            <span>B3</span>
+          </button>
+          <button class="string-card" data-note="E4" type="button">
+            <span class="string-number">1</span>
+            <strong>E</strong>
+            <span>E4</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="glass mini-panel">
+          <p class="section-label">Signal</p>
+          <div class="signal-bars" id="signalBars" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <p class="panel-copy" id="signalCopy">Mic level visualization will respond when live input starts.</p>
+        </article>
+
+        <article class="glass mini-panel">
+          <p class="section-label">History</p>
+          <ul class="history-list" id="historyList">
+            <li><span>Listening</span><strong>Waiting</strong></li>
+            <li><span>Pitch Model</span><strong>Pitchy MPM</strong></li>
+            <li><span>Input</span><strong>Browser Mic API</strong></li>
+          </ul>
+        </article>
+
+        <article class="glass mini-panel">
+          <p class="section-label">Session</p>
+          <div class="session-stats">
+            <div>
+              <span class="muted-text">Instrument</span>
+              <strong>6-string Guitar</strong>
+            </div>
+            <div>
+              <span class="muted-text">Accuracy</span>
+              <strong>+/-1 cent UI</strong>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="microphone-input-selector.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
